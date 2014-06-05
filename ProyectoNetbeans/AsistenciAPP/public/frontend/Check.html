@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/themes/utb.min.css" />
+        <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
+        <script src="js/libs/jquery/jquery-2.1.1.min.js"></script>
+        <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
+    </head>
+    <body>
+        <div data-role="page"  id="Check">
+            <div data-role="header">
+                <h1>UTBAsistencia</h1>
+                <a data-direction="reverse" data-role="button" href="ListarGrupos.html" data-icon="back" data-ajax="false">Back</a>
+            </div>
+            <div data-role="content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow">Estudiantes </a><br>
+                        <form id="checkform">
+                            <fieldset data-role="controlgroup" id="lista_estudiantes">
+
+                            </fieldset>
+                            <input type="submit" data-inline="true" value="Guardar" id="guardar">
+                        </form>
+                    </div>
+
+                    <div class="ui-block-b">
+                        <div class="ui-grid-a">
+                            <div class="ui-block-a">
+                                <a href="#" class="ui-btn ui-corner-all ui-shadow">Ultima Clase </a><br>
+                               
+                            </div>
+
+                            <div class="ui-block-b">
+                                <a href="#" class="ui-btn ui-corner-all ui-shadow">Penultima clase</a><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer">
+                <h3>Versi&oacute;n 1.0.0</h3>
+            </div>
+        </div>
+        <script type="text/javascript">
+
+            $(document).on('ready', function() {
+
+                str = $(location).attr('search');
+                var res = str.split("=");
+                var id = res[1];
+                var grupo_id;
+                var estudianteArray = new Array();
+                var j = 0;
+
+                $.ajax({
+                    url: 'http://localhost:8000/grupo',
+                    type: 'GET'
+                }).done(function(data)
+                {
+                    var value = JSON.parse(data);
+                    for (var i = 0; i < value.length; i++) {
+                        if (id == value[i].cursos_id) {
+                            grupo_id = value[i].id;
+                        }
+                    }
+                    $.ajax({
+                        url: 'http://localhost:8000/estudiantehasgrupo',
+                        type: 'GET'
+                    }).done(function(data2) {
+                        var value2 = JSON.parse(data2);
+                        for (var i = 0; i < value2.length; i++) {
+                            if (value2[i].grupos_id == grupo_id)
+                            {
+                                estudianteArray[j] = value2[i].estudiantes_id;
+                                j = j + 1;
+                            }
+
+                        }
+                        $("#lista_estudiantes").controlgroup();
+                        for (var i = 0; i < estudianteArray.length; i++)
+                        {
+                            $.ajax({
+                                url: 'http://localhost:8000/estudiante/' + estudianteArray[i],
+                                type: 'GET'
+                            }).done(function(data3)
+                            {
+                                var value3 = JSON.parse(data3);
+
+                                $("#lista_estudiantes").append('<label for="' + value3.id + ' ">' + value3.nombrel + ' ' + value3.apellido + '</label>');
+                                $("#lista_estudiantes").append('<input type="checkbox" name="checkbox[' + value3.id + '] " id="cb[' + value3.id + ']" value="' + value3.id + '"  /">');
+
+
+
+                                $("#lista_estudiantes").controlgroup('refresh');
+                            });
+                        }
+                    });
+                });
+                $("#guardar").bind("click", function() {
+                    var x = $("#checkform").serialize();
+                    alert(x);
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

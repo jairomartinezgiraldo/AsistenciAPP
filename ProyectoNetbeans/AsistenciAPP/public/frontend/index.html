@@ -16,30 +16,23 @@ and open the template in the editor.
         <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
     </head>
     <body>
-        <div data-role="page"  id="Check">
+        <div data-role="page"  id="pageLogin">
             <div data-role="header">
                 <h1>UTBAsistencia</h1>
             </div>
-            <div data-role="content">
-                <h1>Check Asistencia</h1>
-
-                <form id="checkform">
-                    <ul data-role="controlgroup listview">
-                        <li>
-                                <label for="red">Estudiantes Numero 1</label>
-                                <input type="checkbox" name="favcolor" id="red" value="red">
-                                <label for="red1">Estudiantes Numero 1</label>
-                                <input type="checkbox" name="favcolor" id="red1" value="red2">
-                        </li>
-                    </ul>
-                    <input type="submit" data-inline="true" value="Guardar" id="guardar">
+            <div data-role="main" class="ui-content">
+                <form id="formularioLogin">
+                    <label for="codigo" class="ui-hidden-accessible">Codigo</label>
+                    <input type="text" name="codigo" id="codigo" placeholder="Codigo" />
+                    <label for="password" class="ui-hidden-accessible">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password" />
+                    <input type="submit" value="Login" />
                 </form>
-
             </div>
             <div data-role="footer">
                 <h3>Versi&oacute;n 1.0.0</h3>
+                <a href="ListarGrupos.html"  data-transition="slide" data-ajax="false">Home</a>
             </div>
         </div>
-
     </body>
 </html>

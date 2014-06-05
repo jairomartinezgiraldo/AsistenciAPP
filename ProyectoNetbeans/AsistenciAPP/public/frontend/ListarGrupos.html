@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/themes/utb.min.css" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
+        <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
+        <script src="js/libs/jquery/jquery-2.1.1.min.js"></script>
+        <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
+        
+    </head>
+    <body>
+        <div data-role="page"  id="Home">
+            <div data-role="header">
+                <h1>UTBAsistencia</h1>
+            </div>
+            <div data-role="content" class="ui-content">
+                <h2>Mis Cursos</h2>
+                <ul data-role="listview" id="lista_cursos">
+                </ul>
+            </div>
+            <div data-role="footer">
+                <h3>Versi&oacute;n 1.0.0</h3>
+            </div>
+        </div> 
+        <script type="text/javascript">
+            $(document).on('ready', function() {
+                $.ajax({
+                    url: 'http://localhost:8000/grupo',
+                    type: 'GET'
+                }).done(function(data)
+                {
+                    var value = JSON.parse(data);
+                    var cursoArray = new Array();
+                    var j = 0;
+                    for (var i = 0; i < value.length; i++)
+                    {
+                        if (value[i].profesores_id == 1)
+                        {
+                            cursoArray[j] = value[i].cursos_id;
+                            j = j + 1;
+                        }
+                    }
+                     $("#lista_cursos").listview();
+                    for (var i = 0; i < cursoArray.length; i++)
+                    {
+                        $.ajax({
+                            url: 'http://localhost:8000/curso/' + cursoArray[i],
+                            type: 'GET'
+                        }).done(function(data2)
+                        {
+                            var value2 = JSON.parse(data2);
+                            $("#lista_cursos").append('<li><a href="Check.html?id=' + value2.id + ' "  data-ajax="false">' + value2.nombre + '</a></li>');
+                            $("#lista_cursos").listview('refresh');
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
