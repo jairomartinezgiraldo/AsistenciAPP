@@ -27,7 +27,18 @@ class AsistenciaController extends \BaseController{
     }
     
     public function create(){
-        return;
+        $hasgrupo = EstudianteHasGrupo::all();
+        $grupoId=Input::get('grupo_id');
+        if($hasgrupo->grupos_id ===$grupoId){
+                $asistencia = new Asistencia;
+                $asistencia->fecha = date("Y/m/d/H/i/s");
+                $asistencia->estudiante_has_grupo_id = $hasgrupo->id;
+                $asistencia->Check = true;
+                $grupo=  EstudianteHasGrupo::find($hasgrupo->id);
+                $asistencia->$grupo->associate($grupo);
+                $asistencia->save();
+                return "Guardado de las Asistencia Fue Con Exito.";
+        } 
     }
     
 }

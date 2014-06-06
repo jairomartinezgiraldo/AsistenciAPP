@@ -10,13 +10,26 @@ and open the template in the editor.
         <!-- meta datos -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-         <!--Archivos css y javascript de Jquerymobile-->
-         <!--  funtes de librerias  -->
+        <!--Archivos css y javascript de Jquerymobile-->
+        <!--  funtes de librerias  -->
         <link rel="stylesheet" href="css/themes/utb.min.css" />
         <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
         <script src="js/libs/jquery/jquery-2.1.1.min.js"></script>
         <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
+        <style type="text/css">
+            .ok{
+                background-color: #40FF00;
+                text-align: center;
+                color: #40FF00;
+            }
+            
+            .off{
+                background-color: #FF0000;
+                text-align: center;
+                color: #FF0000;
+            }
+        </style>
     </head>
     <body>
         <!--   Pagina web para el check de asistencias  -->
@@ -28,27 +41,38 @@ and open the template in the editor.
             <div data-role="content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <a href="#" class="ui-btn ui-corner-all ui-shadow">Estudiantes </a><br>  
+                        <h3>Estudiantes </h3><br>  
                         <!--  formulario para realizar los check por estudiantes -->
                         <form id="checkform">
                             <!-- Bloque para tomar asistencias actual  -->
                             <fieldset data-role="controlgroup" id="lista_estudiantes">
-                                    <input type="checkbox" name="checkbox-1" id="checkbox-1" class="custom" />
-                                    <label for="checkbox-1">I agree</label>
                             </fieldset>
+                            <fieldset id="campoGrupoID"></fieldset>
                             <input type="submit" data-inline="true" value="Guardar" id="guardar">
                         </form>
                     </div>
-                     <!-- Bloque para mostrar asistencias pasada   -->
+                    <!-- Bloque para mostrar asistencias pasada   -->
                     <div class="ui-block-b">
                         <!-- Bloque para mostrar Ultima Asistencias   -->
                         <div class="ui-grid-a">
                             <div class="ui-block-a">
-                                <a href="#" class="ui-btn ui-corner-all ui-shadow">Ultima Clase </a><br>
+                                <h3>Ultima Clase</h3>
+                                <label for="red" class="ok">SI</label>
+                                <input type="checkbox" name="favcolor" id="red" value="red" class="ok" checked disabled>
+                                <label for="green">SI</label>
+                                <input type="checkbox" name="favcolor" id="green" value="green" class="ok" checked disabled>
+                                <label for="blue">NO</label>
+                                <input type="checkbox" name="favcolor" id="blue" value="blue"  class=" off" disabled>
                             </div>
-                             <!-- Bloque para mostrar asistencias penultimas   -->
+                            <!-- Bloque para mostrar asistencias penultimas   -->
                             <div class="ui-block-b">
-                                <a href="#" class="ui-btn ui-corner-all ui-shadow">Penultima clase</a><br>
+                                <h3>Penultima clase</h3>
+                                 <label for="red1" class="ok">SI</label>
+                                <input type="checkbox" name="favcolor" id="red1" value="red" class="ok" checked disabled>
+                                <label for="green2">SI</label>
+                                <input type="checkbox" name="favcolor" id="green2" value="green" class="ok" checked disabled>
+                                <label for="blue1">NO</label>
+                                <input type="checkbox" name="favcolor" id="blue1" value="blue"  class=" off" disabled>
                             </div>
                         </div>
                     </div>
@@ -67,7 +91,7 @@ and open the template in the editor.
                 var grupo_id;
                 var estudianteArray = new Array();  //Arreglo para guardar los id de los estudiantes.
                 var j = 0;
-                $.ajax({   // Peticion de ajax para obtener los grupos de la base de datos por medio de su ruta y controlador
+                $.ajax({// Peticion de ajax para obtener los grupos de la base de datos por medio de su ruta y controlador
                     url: 'http://localhost:8000/grupo',
                     type: 'GET'
                 }).done(function(data)
@@ -79,7 +103,7 @@ and open the template in the editor.
                         }
                     }
                     $.ajax({
-                        url: 'http://localhost:8000/estudiantehasgrupo',  // Peticion de ajax para obtener los estudiantes has grupos de la base de datos por medio de su ruta y controlado
+                        url: 'http://localhost:8000/estudiantehasgrupo', // Peticion de ajax para obtener los estudiantes has grupos de la base de datos por medio de su ruta y controlado
                         type: 'GET'
                     }).done(function(data2) {
                         var value2 = JSON.parse(data2);
@@ -91,6 +115,8 @@ and open the template in the editor.
                             }
 
                         }
+                        $("#checkform").append('<label for="grupo" class="ui-hidden-accessible">Grupo</label>');
+                        $("#checkform").append('<input type="text"class="ui-hidden-accessible" name="grupo_id" id="grupo_id" value="' + grupo_id + '" />');
                         $("#lista_estudiantes").controlgroup();
                         for (var i = 0; i < estudianteArray.length; i++)
                         {
@@ -107,10 +133,17 @@ and open the template in the editor.
                         }
                     });
                 });
-                
+
                 $("#guardar").bind("click", function() {
-                    var x = $("#checkform").serialize();
-                    alert(x);
+                    var saveAsistencia = $("#checkform").serialize();
+                    $.ajax({
+                        url: 'http://localhost:8000/asistencia/create',
+                        type: 'GET',
+                        data: saveAsistencia,
+                        dataType: "json"
+                    }).done(function(data) {
+                        alert(data);
+                    });
                 });
             });
 
