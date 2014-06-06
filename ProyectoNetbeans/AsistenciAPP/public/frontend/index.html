@@ -7,8 +7,11 @@ and open the template in the editor.
 <html>
     <head>
         <title>TODO supply a title</title>
+        <!-- meta datos -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <!--Archivos css y javascript de Jquerymobile-->
+         <!--  funtes de librerias  -->
         <link rel="stylesheet" href="css/themes/utb.min.css" />
         <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
@@ -16,11 +19,14 @@ and open the template in the editor.
         <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
     </head>
     <body>
+        <!-- Pagina jqueqry mobile para Login -->
         <div data-role="page"  id="pageLogin">
             <div data-role="header">
                 <h1>UTBAsistencia</h1>
             </div>
-            <div data-role="main" class="ui-content">
+             <!--   Cuerpo de la Pagina.  -->
+            <div data-role="main" class="ui-content">      
+                <!--   Formulario para Ingresar datos de validacion  -->
                 <form id="formularioLogin">
                     <label for="codigo" class="ui-hidden-accessible">Codigo</label>
                     <input type="text" name="codigo" id="codigo" placeholder="Codigo" />
@@ -29,6 +35,7 @@ and open the template in the editor.
                     <input type="submit" value="Login" />
                 </form>
             </div>
+             <!--  Pie de Pagina de la Pagina. -->
             <div data-role="footer">
                 <h3>Versi&oacute;n 1.0.0</h3>
                 <a href="ListarGrupos.html"  data-transition="slide" data-ajax="false">Home</a>

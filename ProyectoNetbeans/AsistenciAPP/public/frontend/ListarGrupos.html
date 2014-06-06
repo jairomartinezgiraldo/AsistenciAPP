@@ -7,20 +7,23 @@ and open the template in the editor.
 <html>
     <head>
         <title>TODO supply a title</title>
+        <!--  Metadatos asignados    -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--  Fuentes de  librerias externas  -->
         <link rel="stylesheet" href="css/themes/utb.min.css" />
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
         <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
         <script src="js/libs/jquery/jquery-2.1.1.min.js"></script>
         <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
-        
     </head>
     <body>
+         <!--  Pagina iniciade la aplicacionl para mostrar los grupos asignados a un profesor  -->
         <div data-role="page"  id="Home">
             <div data-role="header">
                 <h1>UTBAsistencia</h1>
             </div>
+            <!-- divicion para listar los grupos asignados a cada profesor   -->
             <div data-role="content" class="ui-content">
                 <h2>Mis Cursos</h2>
                 <ul data-role="listview" id="lista_cursos">
@@ -31,34 +34,35 @@ and open the template in the editor.
             </div>
         </div> 
         <script type="text/javascript">
-            $(document).on('ready', function() {
-                $.ajax({
+            $(document).on('ready', function() {  
+                $.ajax({   // Peticion de ajax para obtener los grupos de la base de datos por medio de su ruta y controlador 
                     url: 'http://localhost:8000/grupo',
                     type: 'GET'
                 }).done(function(data)
                 {
                     var value = JSON.parse(data);
-                    var cursoArray = new Array();
-                    var j = 0;
+                    var cursoArray = new Array();    // arreglo donde se encontraran los ID de los cursos de un profesor 
+                    var j = 0; //Subindice del arreglo 
                     for (var i = 0; i < value.length; i++)
                     {
-                        if (value[i].profesores_id == 1)
+                        if (value[i].profesores_id == 1)   //  Dentro de la tabla grupo se identifica los profesor con el ID "1" 
                         {
-                            cursoArray[j] = value[i].cursos_id;
+                            cursoArray[j] = value[i].cursos_id;  // se almacena en el arreglos los id de los cursos pertenecientes al grupo con el id de profesor = a 1.
                             j = j + 1;
                         }
                     }
+                    
                      $("#lista_cursos").listview();
                     for (var i = 0; i < cursoArray.length; i++)
                     {
                         $.ajax({
-                            url: 'http://localhost:8000/curso/' + cursoArray[i],
+                            url: 'http://localhost:8000/curso/' + cursoArray[i],  //Consulta mediante ajax para obetner los datos de un Curso por medio de el id 
                             type: 'GET'
                         }).done(function(data2)
                         {
                             var value2 = JSON.parse(data2);
-                            $("#lista_cursos").append('<li><a href="Check.html?id=' + value2.id + ' "  data-ajax="false">' + value2.nombre + '</a></li>');
-                            $("#lista_cursos").listview('refresh');
+                            $("#lista_cursos").append('<li><a href="Check.html?id=' + value2.id + ' "  data-ajax="false">' + value2.nombre + '</a></li>');  //Escritura en el documento HTML con el Campo Nombre. 
+                            $("#lista_cursos").listview('refresh');  //se Refresca los estilos css de jquery mobile.
                         });
                     }
                 });

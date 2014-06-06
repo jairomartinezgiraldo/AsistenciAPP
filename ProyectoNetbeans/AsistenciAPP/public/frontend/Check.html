@@ -7,8 +7,11 @@ and open the template in the editor.
 <html>
     <head>
         <title>TODO supply a title</title>
+        <!-- meta datos -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <!--Archivos css y javascript de Jquerymobile-->
+         <!--  funtes de librerias  -->
         <link rel="stylesheet" href="css/themes/utb.min.css" />
         <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile.structure-1.4.2.min.css" />
@@ -16,6 +19,7 @@ and open the template in the editor.
         <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
     </head>
     <body>
+        <!--   Pagina web para el check de asistencias  -->
         <div data-role="page"  id="Check">
             <div data-role="header">
                 <h1>UTBAsistencia</h1>
@@ -24,22 +28,25 @@ and open the template in the editor.
             <div data-role="content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <a href="#" class="ui-btn ui-corner-all ui-shadow">Estudiantes </a><br>
+                        <a href="#" class="ui-btn ui-corner-all ui-shadow">Estudiantes </a><br>  
+                        <!--  formulario para realizar los check por estudiantes -->
                         <form id="checkform">
+                            <!-- Bloque para tomar asistencias actual  -->
                             <fieldset data-role="controlgroup" id="lista_estudiantes">
-
+                                    <input type="checkbox" name="checkbox-1" id="checkbox-1" class="custom" />
+                                    <label for="checkbox-1">I agree</label>
                             </fieldset>
                             <input type="submit" data-inline="true" value="Guardar" id="guardar">
                         </form>
                     </div>
-
+                     <!-- Bloque para mostrar asistencias pasada   -->
                     <div class="ui-block-b">
+                        <!-- Bloque para mostrar Ultima Asistencias   -->
                         <div class="ui-grid-a">
                             <div class="ui-block-a">
                                 <a href="#" class="ui-btn ui-corner-all ui-shadow">Ultima Clase </a><br>
-                               
                             </div>
-
+                             <!-- Bloque para mostrar asistencias penultimas   -->
                             <div class="ui-block-b">
                                 <a href="#" class="ui-btn ui-corner-all ui-shadow">Penultima clase</a><br>
                             </div>
@@ -47,22 +54,20 @@ and open the template in the editor.
                     </div>
                 </div>
             </div>
+            <!-- Pie de Pagina -->
             <div data-role="footer">
                 <h3>Versi&oacute;n 1.0.0</h3>
             </div>
         </div>
         <script type="text/javascript">
-
             $(document).on('ready', function() {
-
-                str = $(location).attr('search');
-                var res = str.split("=");
+                str = $(location).attr('search'); //Funcion para obtener la url en la que se encuentra.
+                var res = str.split("=");  //Se obtiene una subcadena de la url; donde se encuentra el id.
                 var id = res[1];
                 var grupo_id;
-                var estudianteArray = new Array();
+                var estudianteArray = new Array();  //Arreglo para guardar los id de los estudiantes.
                 var j = 0;
-
-                $.ajax({
+                $.ajax({   // Peticion de ajax para obtener los grupos de la base de datos por medio de su ruta y controlador
                     url: 'http://localhost:8000/grupo',
                     type: 'GET'
                 }).done(function(data)
@@ -74,14 +79,14 @@ and open the template in the editor.
                         }
                     }
                     $.ajax({
-                        url: 'http://localhost:8000/estudiantehasgrupo',
+                        url: 'http://localhost:8000/estudiantehasgrupo',  // Peticion de ajax para obtener los estudiantes has grupos de la base de datos por medio de su ruta y controlado
                         type: 'GET'
                     }).done(function(data2) {
                         var value2 = JSON.parse(data2);
                         for (var i = 0; i < value2.length; i++) {
                             if (value2[i].grupos_id == grupo_id)
                             {
-                                estudianteArray[j] = value2[i].estudiantes_id;
+                                estudianteArray[j] = value2[i].estudiantes_id; // se almacena en el arreglos los id de los estudiantes pertenecientes al grupo con el id de profesor = a 1.
                                 j = j + 1;
                             }
 
@@ -90,22 +95,19 @@ and open the template in the editor.
                         for (var i = 0; i < estudianteArray.length; i++)
                         {
                             $.ajax({
-                                url: 'http://localhost:8000/estudiante/' + estudianteArray[i],
+                                url: 'http://localhost:8000/estudiante/' + estudianteArray[i], //Consulta mediante ajax para obetner los datos de un Estudiantes por medio de el id 
                                 type: 'GET'
                             }).done(function(data3)
                             {
                                 var value3 = JSON.parse(data3);
-
-                                $("#lista_estudiantes").append('<label for="' + value3.id + ' ">' + value3.nombrel + ' ' + value3.apellido + '</label>');
-                                $("#lista_estudiantes").append('<input type="checkbox" name="checkbox[' + value3.id + '] " id="cb[' + value3.id + ']" value="' + value3.id + '"  /">');
-
-
-
+                                $("#lista_estudiantes").append('<input type="checkbox" name="checkbox[' + value3.id + '] " id="cb[' + value3.id + ']" value="' + value3.id + '" class="custom" /">');
+                                $("#lista_estudiantes").append('<label for="' + value3.id + ' ">' + value3.nombrel + ' ' + value3.apellido + '</label>'); //Escritura en el documento HTML con el Campo Nombre.
                                 $("#lista_estudiantes").controlgroup('refresh');
                             });
                         }
                     });
                 });
+                
                 $("#guardar").bind("click", function() {
                     var x = $("#checkform").serialize();
                     alert(x);
