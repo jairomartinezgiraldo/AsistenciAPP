@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css" />
+        <script src="js/libs/jquery/jquery-2.1.1.min.js"></script>
+        <script src="js/libs/jquery/jquery.mobile-1.4.2.min.js"></script>
+        <style>
+            @media ( min-width: 40em ) {
+                /* Show the table header rows and set all cells to display: table-cell */ 
+                .my-custom-breakpoint td,
+                .my-custom-breakpoint th,
+                .my-custom-breakpoint tbody th,
+                .my-custom-breakpoint tbody td,
+                .my-custom-breakpoint thead td,
+                .my-custom-breakpoint thead th {
+                    display: table-cell;
+                    margin: 0;
+                }
+                /* Hide the labels in each cell */ 
+                .my-custom-breakpoint td .ui-table-cell-label,
+                .my-custom-breakpoint th .ui-table-cell-label { 
+                    display: none;
+                }
+            }
+
+            #tabla_estudiantes {
+                width: 100%;
+                text-align: center;
+                border: 1px solid #DDD;
+                border-spacing: 0px;
+            }
+
+            #tabla_estudiantes th, td {
+                border: 1px solid #DDD;
+            }
+            @font-face {
+              font-family: 'Glyphicons Halflings';
+
+              src: url('../fonts/glyphicons-halflings-regular.eot');
+              src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+            }
+            .glyphicon {
+              position: relative;
+              top: 1px;
+              display: inline-block;
+              font-family: 'Glyphicons Halflings';
+              font-style: normal;
+              font-weight: normal;
+              line-height: 1;
+
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+            }
+            .glyphicon-ok:before {
+              content: "\e013";
+            }
+            .glyphicon-remove:before {
+              content: "\e014";
+            }
+        </style>
+    </head>
+    <body>
+        <div data-role="page"  id="pageLogin">
+            <div data-role="header" data-theme="b">
+                <h1>UTBAsistencia</h1>
+            </div>
+
+            <div data-role="main" class="ui-content">
+                <form id="formularioLogin">
+                    <label for="codigo" class="ui-hidden-accessible">Codigo</label>
+                    <input type="text" name="codigo" id="codigo" placeholder="Codigo" />
+                    <label for="password" class="ui-hidden-accessible">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password" />
+                    <input type="submit" value="Login" />
+                </form>
+
+            </div>
+
+            <div data-role="footer" data-theme="b">
+                <h3>Versi&oacute;n 1.0.0</h3>
+                <a href="#Home" data-transition="slide">Home (practica)</a>
+            </div>
+        </div>
+
+        <div data-role="page"  id="Home">
+            <div data-role="header" data-theme="b">
+                <h1>UTBAsistencia</h1>
+                
+            </div>
+
+            <div data-role="main" class="ui-content">
+                <h2>Mis Cursos</h2>
+                <ul data-role="listview" id="lista_cursos">
+                    
+                </ul>
+                  
+            </div>
+
+            <div data-role="footer" data-theme="b">
+                <h3>Versi&oacute;n 1.0.0</h3>
+            </div>
+        </div> 
+
+
+        <!-- Pagina para check -->
+        <div data-role="page"  id="Check">
+            <div data-role="header" data-theme="b">
+                <h1>UTBAsistencia</h1>
+                
+            </div>
+
+            <div data-role="main" class="ui-content">
+                <h2>Estudiantes <button data-role="button" data-inline="true" id="guardar_cambios">Guardar</button></h2>
+                <table id="tabla_estudiantes">
+                    <thead>
+                        <th>Nombre</th>
+                        <th>Hoy</th>
+                        <th>Última</th>
+                        <th>Penúltima</th>
+                    </thead>
+                    <tbody id="lista_estudiantes">
+                        
+                    </tbody>
+                </table>
+                  
+            </div>
+
+            <div data-role="footer" data-theme="b">
+                <h3>Versi&oacute;n 1.0.0</h3>
+            </div>
+        </div>
+
+        
+        <script type="text/javascript">
+            var checks = new Array();
+            var numeros_id = '';
+            var grupo_id = '';
+            $(document).on("ready", function(){
+
+                $('#formularioLogin').on("submit", function(ev){
+
+                    ev.preventDefault();
+
+                    var codigo = $('#codigo').val();
+                    var password = $('#password').val();
+
+                    $.post("http://localhost/php/login.php", {codigo: codigo, clave: password}, function(data){
+
+
+                        if(data != "" && data != "null" && data != null){
+                            if(data != '0'){
+                                var usuario_profesor = data;
+                                alert("Conectado");
+                                $.mobile.changePage("#home");
+                                cargarCursos(usuario_profesor);
+                            }else{
+                                alert("Usuario o Contraseña Incorrecta");
+                            }
+                        }else{
+                                alert("Usuario o Contraseña Incorrecta");
+                            }
+                    });
+
+                });
+
+
+
+                $('#guardar_cambios').click(function(ev){
+                    ev.preventDefault();
+                    var numeros = '';
+                    for (var i = 0; i < checks.length; i++) {
+                        if($('#hoy'+checks[i]).prop('checked')){
+                            numeros += checks[i]+"-";
+                        }
+                    };
+
+                    alert(numeros);
+                    $.post('http://localhost/php/addAsistencia.php', {numeros: numeros, grupo: grupo_id}, function(responseData){
+                        alert(responseData);
+                        checks = [];
+                    });
+
+                });
+                
+            });    
+
+            function cargarEstudiantes(id_grupo){
+                    grupo_id = id_grupo;
+                    $('#lista_estudiantes').html('');
+                    $.post("http://localhost/php/getEstudiantes.php", {grupo: id_grupo}, function(datos_estudiantes){
+                        
+                        datos_estudiantes = JSON.parse(datos_estudiantes);
+
+                        $.each(datos_estudiantes, function(key, value){
+                            var idest = '', codigo = '', nombre = '', apellido = '';
+                            $.each(value, function(k, v){
+                                if(k == "idestudiante"){
+                                    idest = v;
+                                    
+                                }
+                                if(k == "codigo"){
+                                    codigo = v;
+                                }
+                                if(k == "nombrel"){
+                                    nombre = v;
+                                }
+                                if(k == "apellido"){
+                                    apellido = v;
+                                }
+                                
+                            });
+                            checks.push(idest);
+                            var html_Table = '<tr><td>'+nombre+' '+apellido+'</td><td><input type="checkbox" id="hoy'+idest+'" name="hoy" value="'+idest+'"></td><td>SI</td><td>NO</td></tr>';
+
+                            $('#lista_estudiantes').append(html_Table);
+                            $.mobile.changePage("#Check");
+                        });
+
+                    });
+
+            }
+
+
+                
+
+                function cargarCursos(id_usuario){
+                    $.post("http://localhost/php/getCursos.php", {usuario_id: id_usuario}, function(datos_cursos){
+                         
+                        datos_cursos = JSON.parse(datos_cursos);
+                        
+                        $.each(datos_cursos, function(key, value){
+                            var id = '', nombre = '', nrc = '';
+                            $.each(value, function(k, v){
+                                if(k == "idgrupos"){
+                                    id = v;
+                                }
+                                if(k == "nombre"){
+                                    nombre = v;
+                                }
+                                if(k == "nrc"){
+                                    nrc = v;
+                                }
+
+                            });
+                            $("#lista_cursos").listview();    
+                            $('#lista_cursos').append('<li data-icon="check"><a onclick="cargarEstudiantes('+id+');">'+nombre+' - NRC: '+nrc+'</a></li>');
+                            $("#lista_cursos").listview('refresh');
+                        });
+
+                    });
+                }
+
+
+        </script>
+
+    </body>
+</html>
